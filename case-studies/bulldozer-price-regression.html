@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulldozer price regression — Kiah Wenger</title>
+<meta name="description" content="Auction price prediction on 412,698 Kaggle Blue Book records: time-aware validation, tuned XGBoost, Docker + MLflow reproducibility.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to case study</a>
+
+<nav class="site" aria-label="Site"><div class="wrap">
+  <a class="name" href="../index.html">Kiah Wenger</a>
+  <a href="../index.html#work">Work</a>
+  <a href="../index.html#dashboards">Dashboards</a>
+  <a href="../index.html#experience">Experience</a>
+  <a href="../index.html#contact">Contact</a>
+  <a href="https://github.com/zenwen548" target="_blank" rel="noopener">GitHub</a>
+</div></nav>
+
+<header class="case-head"><div class="wrap">
+  <p class="crumb"><a href="../index.html">Home</a> / <a href="../index.html#work">Featured work</a> / Bulldozer price regression</p>
+  <h1 class="serif">Bulldozer price regression: what will equipment sell for at auction?</h1>
+  <p class="lede">Classic tabular machine learning done properly on 412,698 real auction records — time-aware validation, a tuned XGBoost model, and an interpretability finding that says as much about data collection as about bulldozers.</p>
+  <div class="metastrip">
+    <div><b>Role</b><span>Solo project</span></div>
+    <div><b>Stack</b><span>Python · pandas · scikit-learn · XGBoost · Docker · MLflow</span></div>
+    <div><b>Headline result</b><span>~$10,480 validation MAE · 0.398 RMSLE · 0.648 R²</span></div>
+  </div>
+</div></header>
+
+<main id="main">
+<article class="case"><div class="wrap">
+
+  <h2 class="serif">Problem</h2>
+  <p>Auction buyers and sellers need a practical way to estimate equipment value from historical sale records. The goal: predict sale price from equipment attributes, sale timing, machine metadata, and listing details.</p>
+
+  <h2 class="serif">Data</h2>
+  <p><strong>412,698 auction records</strong> from the Kaggle Blue Book for Bulldozers competition — real-world heavy-equipment sales with dozens of categorical configuration fields and substantial missingness. Per Kaggle's terms the raw data is not redistributed in the repo; the README documents how to place the competition files locally to reproduce every result.</p>
+
+  <h2 class="serif">Method</h2>
+  <ul>
+    <li>Parse sale dates and engineer year, month, day, day-of-week, and day-of-year features.</li>
+    <li>Encode categoricals numerically and add a missingness indicator column per field — treating "this value was never recorded" as information rather than noise.</li>
+    <li>Fill numeric gaps with medians.</li>
+    <li><strong>Split validation by sale year</strong>, not randomly — the model is always judged on selling the future, never on memorizing it.</li>
+    <li>Compare Random Forest and XGBoost; tune XGBoost; evaluate with MAE, RMSLE (the Kaggle competition metric), and R².</li>
+  </ul>
+
+  <h2 class="serif">Results</h2>
+  <table>
+    <caption class="sub" style="text-align:left;caption-side:top">Tuned XGBoost, validation split (from the project README's saved results)</caption>
+    <tr><th>Metric</th><th class="num">Validation result</th></tr>
+    <tr><td>MAE (average dollar error)</td><td class="num">about $10,480</td></tr>
+    <tr><td>RMSLE (competition metric)</td><td class="num">0.398</td></tr>
+    <tr><td>R²</td><td class="num">0.648</td></tr>
+  </table>
+  <figure class="figure">
+    <img src="../assets/img/bulldozer-prediction-errors.png" alt="Scatter plot of validation prediction errors for the tuned XGBoost model" loading="lazy">
+    <figcaption>Validation prediction errors for the tuned model, from the notebook.</figcaption>
+  </figure>
+
+  <h2 class="serif">What mattered — the interesting part</h2>
+  <p>The model's strongest signals aren't horsepower or age. They're <em>missingness fields</em>: whether the listing bothered to record a scarifier, a coupler system, a product size. Incomplete records line up with older, less-documented, lower-value equipment — so listing completeness itself carries pricing signal. For a business, that finding changes data-collection policy, not just the model.</p>
+  <figure class="figure">
+    <img src="../assets/img/bulldozer-feature-importance.png" alt="Top ten feature importances for the tuned XGBoost model, led by Scarifier-is-missing at 0.43" loading="lazy">
+    <figcaption>Top ten features: missingness indicators dominate (Scarifier_is_missing at 0.43).</figcaption>
+  </figure>
+
+  <h2 class="serif">Reproducibility</h2>
+  <p>The notebook is the narrative artifact; a command-line training wrapper (<code>src/train.py</code>) reruns the tuned model outside it, logging parameters, metrics, feature importance, predictions, and the fitted model to MLflow. A Dockerfile makes the whole training run a one-line container command. If it can't be rerun from a fresh clone, it isn't done.</p>
+
+  <h2 class="serif">Takeaway</h2>
+  <p>A real dataset, a practical pricing problem, time-aware validation, model comparison, and interpretable results — with deliberate restraint: Spark was evaluated and rejected because the data fits in memory, and Docker + MLflow were chosen instead because they improve reproducibility without changing the project's goal.</p>
+
+  <h2 class="serif">Limitations</h2>
+  <ul>
+    <li>Results are validation-split metrics, not competition leaderboard scores on the hidden test set.</li>
+    <li>The competition data ends in the early 2010s — patterns learned here describe that market era.</li>
+    <li>Median imputation is deliberately simple; the missingness indicators carry the signal instead.</li>
+  </ul>
+
+  <h2 class="serif">Next improvements</h2>
+  <ul>
+    <li>Move the notebook and saved outputs fully into the project folder.</li>
+    <li>Add a small saved-output sample after a local Kaggle rerun.</li>
+  </ul>
+
+  <div class="evidence-bar">
+    <a class="cta primary" href="https://github.com/zenwen548/data_science_portfolio/tree/main/projects/bulldozer-price-regression" target="_blank" rel="noopener">Code &amp; README</a>
+    <a class="cta" href="https://github.com/zenwen548/data_science_portfolio/blob/main/Bulldozer-Price-Regression.ipynb" target="_blank" rel="noopener">Notebook on GitHub</a>
+    <a class="cta" href="https://www.linkedin.com/pulse/predicting-bulldozer-sale-prices-ai-kiah-wenger-qbuoc/" target="_blank" rel="noopener">Write-up on LinkedIn</a>
+    <a class="cta" href="../index.html#work">← All featured work</a>
+  </div>
+
+</div></article>
+</main>
+
+<footer class="site"><div class="wrap">
+  <div class="row">
+    <a href="mailto:kiahlw@gmail.com">kiahlw@gmail.com</a>
+    <a href="https://github.com/zenwen548" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://public.tableau.com/app/profile/lee6095/vizzes" target="_blank" rel="noopener">Tableau Public</a>
+  </div>
+  <p class="note">Kiah Wenger · San Diego, CA. Kaggle data not redistributed — reproduction steps in the repo README. Private review build.</p>
+</div></footer>
+
+</body>
+</html>

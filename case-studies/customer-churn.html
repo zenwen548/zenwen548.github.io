@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer churn analytics — Kiah Wenger</title>
+<meta name="description" content="End-to-end churn pipeline case study: leakage discovery, honest out-of-fold scoring, and a live Tableau dashboard with revenue at risk.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to case study</a>
+
+<nav class="site" aria-label="Site"><div class="wrap">
+  <a class="name" href="../index.html">Kiah Wenger</a>
+  <a href="../index.html#work">Work</a>
+  <a href="../index.html#dashboards">Dashboards</a>
+  <a href="../index.html#experience">Experience</a>
+  <a href="../index.html#contact">Contact</a>
+  <a href="https://github.com/zenwen548" target="_blank" rel="noopener">GitHub</a>
+</div></nav>
+
+<header class="case-head"><div class="wrap">
+  <p class="crumb"><a href="../index.html">Home</a> / <a href="../index.html#work">Featured work</a> / Customer churn analytics</p>
+  <h1 class="serif">Customer churn: risk, revenue, and an honest model</h1>
+  <p class="lede">An end-to-end pipeline from raw customer tables to a live Tableau dashboard — including the part most portfolios leave out: finding out the first model was too good to be true, and rebuilding it properly.</p>
+  <div class="metastrip">
+    <div><b>Role</b><span>Solo project</span></div>
+    <div><b>Stack</b><span>Python · scikit-learn · PySpark · Docker · Tableau</span></div>
+    <div><b>Headline result</b><span>0.758 out-of-fold ROC-AUC · $95,704 modeled revenue at risk (synthetic sample)</span></div>
+    <div><b>Evidence</b><span><a href="https://public.tableau.com/views/Churn_Model_Viz/Dashboard1?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener">Dashboard</a> · <a href="https://github.com/zenwen548/data_science_portfolio/tree/main/projects/customer-churn" target="_blank" rel="noopener">Code</a></span></div>
+  </div>
+</div></header>
+
+<main id="main">
+<article class="case"><div class="wrap">
+
+  <h2 class="serif">Problem</h2>
+  <p>Subscription businesses lose revenue quietly when customers cancel. The goal: score every customer's churn risk from account attributes, support activity, transaction behavior, and subscription timing, so retention work can focus on the customers most likely to leave — and on the dollars attached to them.</p>
+
+  <h2 class="serif" id="data">Data</h2>
+  <p>Two input tables joined on customer ID: customer attributes (segment, region, account and contract type, payment, service) and subscription records (dates, cost, support calls, transactions, billing drivers, churn label). The shipped sample is <strong>2,000 seeded synthetic customers</strong>, generated so the whole pipeline reproduces from a fresh clone without private customer records — this is disclosed by design, and any pair of CSVs with matching columns can be substituted via command-line flags. This is a worked example of leakage-aware churn modeling, not a benchmark on a real customer base.</p>
+
+  <h2 class="serif">The leakage find</h2>
+  <div class="leak-seq">
+    <p class="leak-seq-heading">Why you can trust my numbers</p>
+    <div class="leak-seq-row">
+      <div class="leak-step">
+        <span class="leak-num alert">1.000</span>
+        <span class="leak-label">single-feature &quot;AUC&quot;</span>
+        <span class="leak-note">target leakage — too good to be true</span>
+      </div>
+      <span class="leak-arrow" aria-hidden="true">→</span>
+      <div class="leak-step">
+        <span class="leak-num">0.505</span>
+        <span class="leak-label">honest out-of-fold baseline</span>
+        <span class="leak-note">a coin flip, measured properly</span>
+      </div>
+      <span class="leak-arrow" aria-hidden="true">→</span>
+      <div class="leak-step">
+        <span class="leak-num accent">0.758</span>
+        <span class="leak-label">rebuilt, leakage-safe</span>
+        <span class="leak-note">the number that ships</span>
+      </div>
+    </div>
+  </div>
+  <div class="callout">
+    <p><strong>The first version of this model looked perfect — and that was the problem.</strong> The dashboard showed a wall of predicted probabilities at 1.0. A single-feature audit traced it to target leakage: <code>avg_transactions_per_day</code> alone predicted churn with an AUC of 1.0, because it encoded information that only exists after a customer has already churned.</p>
+    <p>Scored honestly — out of fold, with leaky fields removed — the model was worth 0.505: a coin flip. So the pipeline was rebuilt: leakage-prone fields (end dates, activity flags, tenure, per-day rates, IDs) are dropped before modeling, a single-feature AUC screen runs on every export as a permanent guardrail, and every customer is scored out of fold. After the rebuild, the strongest single feature scores 0.675 — real signal, honestly measured, with the final model at 0.758.</p>
+  </div>
+
+  <h2 class="serif">Method</h2>
+  <p>The pipeline standardizes and deduplicates both tables, derives the churn label when none is provided, engineers referral and subscription-timing features, and auto-selects numeric plus low-cardinality categorical features. Two models train in scikit-learn pipelines — Logistic Regression and Random Forest — evaluated on a stratified 30% holdout <em>and</em> by out-of-fold ROC-AUC. The winner is chosen by the out-of-fold number, because that is the score that survives contact with new data.</p>
+
+  <h2 class="serif">Results</h2>
+  <table>
+    <caption class="sub" style="text-align:left;caption-side:top">Model comparison (from the pipeline's committed <code>model_metrics.csv</code>)</caption>
+    <tr><th>Model</th><th class="num">Out-of-fold ROC-AUC</th><th class="num">Holdout ROC-AUC</th><th class="num">Accuracy</th></tr>
+    <tr><td><strong>Logistic Regression (selected)</strong></td><td class="num"><strong>0.758</strong></td><td class="num">0.776</td><td class="num">0.707</td></tr>
+    <tr><td>Random Forest</td><td class="num">0.744</td><td class="num">0.789</td><td class="num">0.727</td></tr>
+  </table>
+  <p>Logistic Regression wins on the honest metric even though Random Forest looks better on the holdout — exactly the kind of call the out-of-fold discipline exists to make. On the churn class the selected model reaches 0.81 precision and 0.71 recall. Scoring all 2,000 customers yields 1,131 predicted churners, tiered High (608) / Medium (744) / Low (648), with <strong>$95,704 in monthly revenue at risk</strong> — every number above comes from the committed pipeline outputs.</p>
+  <div class="figrid">
+    <figure class="figure"><img src="../assets/img/Log_Reg_ROC_Curve.jpg" alt="ROC curve for the selected logistic regression churn model" loading="lazy"><figcaption>ROC curve, selected model (honest rebuild).</figcaption></figure>
+    <figure class="figure"><img src="../assets/img/Log_Reg_Confusion_Matrix.jpg" alt="Confusion matrix for the selected logistic regression churn model" loading="lazy"><figcaption>Out-of-fold confusion matrix, all 2,000 customers.</figcaption></figure>
+  </div>
+
+  <h2 class="serif">Output: the dashboard</h2>
+  <p>The pipeline exports a Tableau-ready dataset — churn probability, risk tier, revenue at risk, and an impacted-customer flag per customer — plus a static QA packet so the dashboard can be reviewed against known numbers before publishing. The live dashboard shows where risk concentrates, which states run hot, and how support-call patterns differ by risk group.</p>
+  <figure class="figure">
+    <a href="https://public.tableau.com/views/Churn_Model_Viz/Dashboard1?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener">
+      <img src="../assets/img/tableau-churn-dashboard.png" alt="Live churn Tableau dashboard: revenue-at-risk quadrants, state risk map, support calls and transactions by risk group" loading="lazy">
+    </a>
+    <figcaption>The live Tableau Public dashboard (click to open), captured 2026-07-08. A visual republish pass is queued.</figcaption>
+  </figure>
+
+  <h2 class="serif">Scale layer</h2>
+  <p>A PySpark path keeps the same Tableau serving contract at larger volume: Spark generates and trains on a 10-million-row synthetic dataset in Docker, then writes aggregated rollups (region, contract, risk tier) plus a capped row-level extract for drilldown — separating heavy processing from dashboard delivery instead of committing large generated data.</p>
+
+  <h2 class="serif">Business takeaway</h2>
+  <p>Retention teams don't need a probability — they need a call list with dollars on it. This pipeline turns raw account data into exactly that: the 608 high-tier customers carry the bulk of $95,704 in monthly revenue at risk, and the dashboard drills from the national picture to the individual customers worth calling first.</p>
+
+  <h2 class="serif">Limitations</h2>
+  <ul>
+    <li>The sample data is synthetic — built to carry genuine but imperfect churn signal, not to represent a specific company's customer base.</li>
+    <li>Classification uses the default 0.5 threshold; a real retention program would tune it against the cost of missed churners versus wasted outreach.</li>
+    <li>No hyperparameter search — model settings are sensible fixed choices.</li>
+    <li>When no churn label is provided, churn is inferred from subscription end dates, which treats every ended subscription as churn.</li>
+  </ul>
+
+  <h2 class="serif">Next improvements</h2>
+  <ul>
+    <li>Threshold tuning against an explicit cost matrix.</li>
+    <li>A hyperparameter search under the same out-of-fold discipline.</li>
+    <li>Publishing the refreshed dashboard (visual polish pass is queued).</li>
+  </ul>
+
+  <div class="evidence-bar">
+    <a class="cta primary" href="https://github.com/zenwen548/data_science_portfolio/tree/main/projects/customer-churn" target="_blank" rel="noopener">Code &amp; README</a>
+    <a class="cta" href="https://public.tableau.com/views/Churn_Model_Viz/Dashboard1?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener">Live Tableau dashboard</a>
+    <a class="cta" href="https://github.com/zenwen548/data_science_portfolio" target="_blank" rel="noopener">Portfolio repo</a>
+    <a class="cta" href="../index.html#work">← All featured work</a>
+  </div>
+
+</div></article>
+</main>
+
+<footer class="site"><div class="wrap">
+  <div class="row">
+    <a href="mailto:kiahlw@gmail.com">kiahlw@gmail.com</a>
+    <a href="https://github.com/zenwen548" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://public.tableau.com/app/profile/lee6095/vizzes" target="_blank" rel="noopener">Tableau Public</a>
+  </div>
+  <p class="note">Kiah Wenger · San Diego, CA. Synthetic sample data disclosed above. Private review build.</p>
+</div></footer>
+
+</body>
+</html>

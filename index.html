@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiah Wenger — data scientist</title>
+<meta name="description" content="Data scientist and analyst in San Diego. Machine learning pipelines a reviewer can clone and run, live Tableau dashboards, and honest, verified metrics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#work">Skip to featured work</a>
+
+<nav class="site" aria-label="Site"><div class="wrap">
+  <a class="name" href="#top">Kiah Wenger</a>
+  <a href="#work">Work</a>
+  <a href="#dashboards">Dashboards</a>
+  <a href="#experience">Experience</a>
+  <a href="#contact">Contact</a>
+  <a href="https://github.com/zenwen548" target="_blank" rel="noopener">GitHub</a>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <div class="hero-copy">
+    <p class="kicker">DATA SCIENCE · SAN DIEGO</p>
+    <h1 class="serif">I build the decision tools behind churn, pricing, and risk.</h1>
+    <p class="tag">A decade of analytics across finance and energy. I ship machine-learning pipelines a reviewer can clone and run — and Tableau dashboards that drill from the headline number to the customers behind it. Open to data scientist and senior data analyst roles.</p>
+    <p class="meta">Python · SQL · Tableau · scikit-learn · XGBoost · PySpark · Docker · MLflow</p>
+    <div class="btns">
+      <a class="btn primary" href="#work">See the work</a>
+      <a class="btn" href="mailto:kiahlw@gmail.com">Email me</a>
+    </div>
+  </div>
+  <div class="leak-seq">
+    <p class="leak-seq-heading">Why you can trust my numbers</p>
+    <div class="leak-seq-row">
+      <div class="leak-step">
+        <span class="leak-num alert">1.000</span>
+        <span class="leak-label">single-feature &quot;AUC&quot;</span>
+        <span class="leak-note">target leakage — too good to be true</span>
+      </div>
+      <span class="leak-arrow" aria-hidden="true">→</span>
+      <div class="leak-step">
+        <span class="leak-num">0.505</span>
+        <span class="leak-label">honest out-of-fold baseline</span>
+        <span class="leak-note">a coin flip, measured properly</span>
+      </div>
+      <span class="leak-arrow" aria-hidden="true">→</span>
+      <div class="leak-step">
+        <span class="leak-num accent">0.758</span>
+        <span class="leak-label">rebuilt, leakage-safe</span>
+        <span class="leak-note">the number that ships</span>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<main>
+<section id="work"><div class="wrap">
+  <h2 class="serif">Featured work</h2>
+  <p class="sub">Two projects, each with a working artifact. Every number below comes from the committed pipeline outputs — verifiable one click away.</p>
+
+  <article class="evrow">
+    <div class="body">
+      <div class="ph"><h3>Customer churn analytics</h3><span class="pill">Flagship</span><a class="pill soft" href="case-studies/customer-churn.html#data">synthetic demo data</a></div>
+      <p class="q">Which customers are about to leave, and what revenue is at stake?</p>
+      <p>An end-to-end churn pipeline built the honest way: a leakage screen caught a variable that alone predicted churn perfectly, so the model was rebuilt and every customer scored out of fold. The export feeds a live Tableau dashboard with risk tiers and revenue at risk.</p>
+      <div class="stats">
+        <span class="stat"><b>0.758</b><span>out-of-fold ROC-AUC</span></span>
+        <span class="stat"><b>$95,704</b><span>modeled monthly revenue at risk</span></span>
+        <span class="stat"><b>2,000</b><span>customers scored per run</span></span>
+      </div>
+      <p class="footnote">Modeled on a seeded synthetic sample of 2,000 customers — built so anyone can reproduce the pipeline; full disclosure in the case study.</p>
+      <div class="cta-row">
+        <a class="cta primary" href="case-studies/customer-churn.html">Case study</a>
+        <a class="cta" href="https://public.tableau.com/views/Churn_Model_Viz/Dashboard1?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener">Live Tableau dashboard</a>
+        <a class="cta" href="https://github.com/zenwen548/data_science_portfolio/tree/main/projects/customer-churn" target="_blank" rel="noopener">Code on GitHub</a>
+      </div>
+    </div>
+    <div class="media">
+      <a class="shot" href="https://public.tableau.com/views/Churn_Model_Viz/Dashboard1?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener" aria-label="Open the live churn Tableau dashboard">
+        <img src="assets/img/tableau-churn-card-thumb.png" alt="National level revenue-at-risk quadrant chart from the churn Tableau dashboard, grouping customer segments by revenue and risk" loading="lazy">
+      </a>
+      <span class="cap">Live Tableau Public dashboard, captured 2026-07-08</span>
+    </div>
+  </article>
+
+  <article class="evrow">
+    <div class="body">
+      <div class="ph"><h3>Bulldozer price regression</h3><span class="pill soft">Featured</span></div>
+      <p class="q">What will heavy equipment sell for at auction?</p>
+      <p>Auction price prediction on 412,698 Kaggle Blue Book bulldozer records. Date-based feature engineering, a time-aware validation split, and a tuned XGBoost model tracked with MLflow. The strongest pricing signal turned out to be listing completeness — a finding that changes how a business collects data.</p>
+      <div class="stats">
+        <span class="stat"><b>$10,480</b><span>validation MAE</span></span>
+        <span class="stat"><b>0.398</b><span>validation RMSLE</span></span>
+        <span class="stat"><b>412,698</b><span>auction records</span></span>
+      </div>
+      <div class="cta-row">
+        <a class="cta primary" href="case-studies/bulldozer-price-regression.html">Case study</a>
+        <a class="cta" href="https://github.com/zenwen548/data_science_portfolio/blob/main/Bulldozer-Price-Regression.ipynb" target="_blank" rel="noopener">Notebook</a>
+        <a class="cta" href="https://github.com/zenwen548/data_science_portfolio/tree/main/projects/bulldozer-price-regression" target="_blank" rel="noopener">Code on GitHub</a>
+        <a class="cta" href="https://www.linkedin.com/pulse/predicting-bulldozer-sale-prices-ai-kiah-wenger-qbuoc/" target="_blank" rel="noopener">Article</a>
+      </div>
+    </div>
+    <div class="media">
+      <a class="shot" href="case-studies/bulldozer-price-regression.html" aria-label="Read the bulldozer price regression case study">
+        <img src="assets/img/bulldozer-feature-importance.png" alt="Bar chart of the tuned XGBoost model's top ten features, led by Scarifier-is-missing at 0.43 importance" loading="lazy">
+      </a>
+      <span class="cap">Top model features — missingness fields carry real pricing signal</span>
+    </div>
+  </article>
+</div></section>
+
+<section id="dashboards"><div class="wrap">
+  <h2 class="serif">Live dashboards</h2>
+  <p class="sub">Both run on Tableau Public — click through and explore the real thing.</p>
+  <div class="dash-grid">
+    <div class="dash-card">
+      <a class="shot" href="https://public.tableau.com/views/Churn_Model_Viz/Dashboard1?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener" aria-label="Open the churn prediction dashboard on Tableau Public">
+        <img src="assets/img/tableau-churn-dashboard.png" alt="Churn prediction dashboard with national revenue-at-risk chart and state risk map" loading="lazy">
+      </a>
+      <div class="db">
+        <h3>Churn prediction — risk and revenue</h3>
+        <p>Revenue at risk by segment, state-level risk comparison, and support-call patterns by risk group, fed directly by the churn pipeline's export.</p>
+        <a class="go" href="https://public.tableau.com/views/Churn_Model_Viz/Dashboard1?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener">View full dashboard →</a>
+      </div>
+    </div>
+    <div class="dash-card">
+      <a class="shot" href="https://public.tableau.com/views/OperationsKPIs_17387060122900/Dashboard2?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener" aria-label="Open the operations KPI dashboard on Tableau Public">
+        <img src="assets/img/tableau-opskpi-card-thumb.png" alt="Operations team KPI totals and stacked monthly request-volume bar chart" loading="lazy">
+      </a>
+      <div class="db">
+        <h3>Operations team KPIs</h3>
+        <p>1.16M requests tracked at a 99.2% completion rate across a six-month window (Sep 2022 – Feb 2023), with request-type breakdowns and SLA filtering.</p>
+        <a class="go" href="https://public.tableau.com/views/OperationsKPIs_17387060122900/Dashboard2?:showVizHome=no&amp;:embed=yes&amp;:tabs=no&amp;:toolbar=yes" target="_blank" rel="noopener">View full dashboard →</a>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2 class="serif">How I work</h2>
+  <p class="sub">Three habits that show up in every project above.</p>
+  <div class="how">
+    <div class="h-card"><h3>Honest models over pretty numbers</h3><p>The churn project's headline is a 0.758 AUC because the perfect-looking score was leakage, and the writeups say so. Limitations are documented, not hidden.</p></div>
+    <div class="h-card"><h3>Reproducible by strangers</h3><p>Pinned dependencies, sample data that ships, Docker entrypoints, MLflow tracking. If it cannot be rerun from a fresh clone, it is not done.</p></div>
+    <div class="h-card"><h3>Built for the decision</h3><p>Every model ends in something a stakeholder can use: risk tiers, revenue at risk, and drilldowns from the aggregate to the exact customers to call.</p></div>
+  </div>
+</div></section>
+
+<section id="experience"><div class="wrap">
+  <h2 class="serif">Experience</h2>
+  <p class="sub">Ten years across consulting, escrow, wealth management, and clean energy, now paired with graduate data science coursework.</p>
+  <div class="xp">
+    <div class="when">May 2025 – Sep 2025</div>
+    <div><span class="role">Data analyst</span> <span class="org">· Doc2Doc</span>
+      <p>Built Python and SQL validation workflows in Snowflake for credit-risk model training data, auditing 200+ CRM fields and identifying data gaps. Developed derived risk features including weighted-average FICO and three-month rolling prepayment averages, reducing reporting errors by approximately 15% and saving 10 hours of manual work per month.</p></div>
+  </div>
+  <div class="xp">
+    <div class="when">May 2023 – Sep 2024</div>
+    <div><span class="role">Data analyst</span> <span class="org">· Ivy Energy</span>
+      <p>Built energy forecasting models and Python automation for large-scale data integration; automated manual billing workflows with SQL and Python, saving $12,000 a year and earning the top performance rating.</p></div>
+  </div>
+  <div class="xp">
+    <div class="when">Apr 2020 – Apr 2023</div>
+    <div><span class="role">Business intelligence analyst</span> <span class="org">· LPL Financial</span>
+      <p>Financial modeling and Tableau KPI dashboards for an $8B portfolio; market segmentation and variance analysis that shaped allocation strategy and cut weekly analysis time.</p></div>
+  </div>
+  <div class="xp">
+    <div class="when">Feb 2017 – Jan 2019</div>
+    <div><span class="role">Data analyst</span> <span class="org">· Franklin Escrow</span>
+      <p>Regression analysis on transaction data that removed inefficiencies worth $80,000 a year; KPI dashboards, demand forecasting, and A/B testing for targeted campaigns.</p></div>
+  </div>
+  <div class="xp">
+    <div class="when">Aug 2014 – Feb 2017</div>
+    <div><span class="role">Business intelligence analyst</span> <span class="org">· Deloitte</span>
+      <p>Excel and SQL KPI dashboards with real-time tracking across client projects; led a customer feedback analysis that used predictive insights to lift retention and reduce churn.</p></div>
+  </div>
+</div></section>
+
+<section id="skills"><div class="wrap">
+  <h2 class="serif">Toolkit</h2>
+  <p class="sub">Grouped the way the work actually flows.</p>
+  <div class="pipeline">
+    <div class="pipe"><b>Collect</b><span>SQL · APIs · Excel VBA</span></div>
+    <div class="pipe"><b>Process</b><span>Python · pandas · PySpark · Docker</span></div>
+    <div class="pipe"><b>Model</b><span>scikit-learn · XGBoost · MLflow</span></div>
+    <div class="pipe"><b>Communicate</b><span>Tableau · dashboards · case studies</span></div>
+  </div>
+</div></section>
+</main>
+
+<footer class="site" id="contact"><div class="wrap">
+  <p class="big serif">Let's talk about your data.</p>
+  <p class="lede">Open to data scientist and senior data analyst roles. The fastest way to evaluate my work is the portfolio repo; the fastest way to reach me is email.</p>
+  <div class="row">
+    <a href="mailto:kiahlw@gmail.com">kiahlw@gmail.com</a>
+    <a href="https://github.com/zenwen548" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://public.tableau.com/app/profile/lee6095/vizzes" target="_blank" rel="noopener">Tableau Public</a>
+  </div>
+  <p class="note">Kiah Wenger · San Diego, CA. Featured code is open-source on GitHub (MIT). Sample data in the churn project is synthetic by design — disclosed in the case study. Private review build.</p>
+</div></footer>
+
+</body>
+</html>
